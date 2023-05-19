@@ -1,0 +1,208 @@
+#VRML_SIM R2023a utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/floors/protos/RectangleArena.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/appearances/protos/Parquetry.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/tables/protos/Table.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/toys/protos/RubberDuck.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/factory/containers/protos/CardboardBox.proto"
+
+WorldInfo {
+}
+Viewpoint {
+  orientation 0.2768358674905165 0.11392785161235489 -0.9541395847032899 2.3830471766950745
+  position 2.0465563972572367 1.68969411020469 1.7490159887554202
+}
+TexturedBackground {
+  texture "empty_office"
+}
+TexturedBackgroundLight {
+  castShadows FALSE
+}
+RectangleArena {
+  floorSize 10 10
+  floorTileSize 5 5
+  floorAppearance Parquetry {
+  }
+}
+CardboardBox {
+  translation 0.85 -0.3 0.4
+  size 0.2 0.2 0.05
+}
+Robot {
+  translation 0 0 0.03
+  scale 0.5 0.5 0.5
+  children [
+    CadShape {
+      url [
+        "../blender/meshes/scara-link-0.dae"
+      ]
+    }
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        axis 0 0 1
+        anchor 0 0 1.3
+      }
+      device [
+        RotationalMotor {
+          name "joint1"
+          controlPID 1 0 0
+          minPosition -3.1415
+          maxPosition 3.1415
+        }
+      ]
+      endPoint Solid {
+        translation 0 0 1.3
+        children [
+          HingeJoint {
+            jointParameters HingeJointParameters {
+              axis 0 0 1
+              anchor 1 0 0.2
+            }
+            device [
+              RotationalMotor {
+                name "joint2"
+                controlPID 1 0 0
+                minPosition -2.0944
+                maxPosition 2.0944
+                maxTorque 100
+              }
+            ]
+            endPoint Solid {
+              translation 1 0 0.2
+              children [
+                CadShape {
+                  url [
+                    "../blender/meshes/scara-link-2.dae"
+                  ]
+                }
+                Transform {
+                  translation 1 0 0
+                  children [
+                    SliderJoint {
+                      jointParameters JointParameters {
+                        axis 0 0 -1
+                      }
+                      device [
+                        LinearMotor {
+                          name "joint3"
+                          minPosition -0.3
+                          maxPosition 0.5
+                        }
+                      ]
+                      endPoint Solid {
+                        translation 1.033616969792206e-09 -1.306866836969789e-10 -6.129506616159297e-08
+                        rotation -2.4607303829269113e-05 0.9999999976423377 -6.41077633924668e-05 1.22590133056884e-07
+                        children [
+                          CadShape {
+                            url [
+                              "../blender/meshes/scara-link-3.dae"
+                            ]
+                          }
+                          HingeJoint {
+                            jointParameters HingeJointParameters {
+                              axis 0 0 -1
+                            }
+                            device [
+                              RotationalMotor {
+                                name "joint4"
+                                minPosition -3.1415
+                                maxPosition 3.1415
+                              }
+                            ]
+                            endPoint DEF GRIPPER Solid {
+                              translation 0 0 -0.45
+                              rotation 1 0 4.56889572239252e-18 3.1415
+                              children [
+                                CadShape {
+                                  url [
+                                    "../blender/meshes/scara-link-4.dae"
+                                  ]
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                        boundingObject Cylinder {
+                          height 0.8
+                          radius 0.05
+                        }
+                        physics Physics {
+                          density -1
+                          mass 0.275
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+              boundingObject Transform {
+                translation 0.5 0 0
+                children [
+                  Box {
+                    size 1.4 0.4 0.2
+                  }
+                ]
+              }
+              physics Physics {
+                density -1
+                mass 1
+              }
+            }
+          }
+          CadShape {
+            url [
+              "../blender/meshes/scara-link-1.dae"
+            ]
+          }
+        ]
+        boundingObject Transform {
+          translation 0.5 0 0
+          children [
+            Box {
+              size 1.4 0.4 0.2
+            }
+          ]
+        }
+        physics Physics {
+          density -1
+          mass 1
+        }
+      }
+    }
+  ]
+  name "Scara"
+  boundingObject Group {
+    children [
+      Transform {
+        translation 0 0 0.1
+        children [
+          Cylinder {
+            height 0.2
+            radius 0.5
+          }
+        ]
+      }
+      Transform {
+        translation 0 0 0.7
+        children [
+          Cylinder {
+            height 1
+            radius 0.2
+          }
+        ]
+      }
+    ]
+  }
+  controller "scara_controller"
+  supervisor TRUE
+}
+Table {
+  translation 0.75 0 0
+  name "Table"
+  size 0.5 0.9 0.37
+}
+DEF DUCK RubberDuck {
+  translation 0.748406 0.230732 0.390438
+}
