@@ -19,12 +19,18 @@ def s(x):
 
 def fkine(q):
     """
-    # TODO
+    # DONE
     Implement the forward kinematics of the SCARA robot.
     Input: q - joint angles (list of 4 floats)
     Output: T - transformation matrix (4x4 numpy array)
     """
-    raise NotImplementedError("FKINE not implemented")
+    mat = [
+    [c(q[0] + q[1] + q[2]), s(q[0] + q[1] + q[2]), 0, 0.5*c(q[0]) + 0.5*c(q[0] + q[1])+ 0.5*c(q[0] + q[1] + q[2])],
+    [s(q[0] + q[1] + q[2]), -c(q[0] + q[1] + q[2]), 0, 0.5*s(q[0]) + 0.5*s(q[0] + q[1])+ 0.5*s(q[0] + q[1] + q[2])],
+    [0, 0, -1, 0.525 - q[3]],
+    [0, 0, 0, 1]]
+    
+    return mat
 
 
 def invkine(x, y, z, phi, l1=0.5, l2=0.5, offset=0.525):
@@ -46,8 +52,8 @@ def invkine(x, y, z, phi, l1=0.5, l2=0.5, offset=0.525):
     k2 = l2 * s2
 
     q1 = np.arctan2(y, x) - np.arctan2(k2, k1)
-    q3 = phi - q1 - q2
-    q4 = offset - z 
+    q3 = offset - z  
+    q4 = phi - q1 - q2
 
     return [q1, q2, q3, q4]
 
@@ -157,9 +163,31 @@ if __name__ == "__main__":
 
     # Main loop:
     # Perform simulation steps until Webots is stopping the controller
+    
+    finished = False
     while scara.step() != -1:
         # TODO
         # Implement your code here
-        raise NotImplementedError("TASK is not implemented")
-
-    # Enter here exit cleanup code.
+        new_pos, new_yaw, colliding = scara.is_colliding()
+        
+        if(colliding == False and finished == False):
+            x, y, z, phi = scara.getDuckPose()
+            q1, q2, q3, q4 = invkine(x, y, z, phi, l1=0.5, l2=0.5, offset=0.525)
+            scara.set_position([q1, q2, q3, q4])
+            scara.delay(3000)
+            scara.hold()
+        elif(colliding == True and finished == False):
+            x2, y2, z2, phi2 = 0.85, -0.3, 0.6, -np.pi/2
+            q1, q2, q3, q4 = invkine(x2, y2, z2, phi2, l1=0.5, l2=0.5, offset=0.525)
+            scara.set_position([q1, q2, q3, q4])
+            finished = True
+            scara.delay(3000)
+            scara.release()
+        else:
+            q1, q2, q3, q4 = invkine(x, y, z, phi, l1=0.5, l2=0.5, offset=0.525)
+            scara.set_position([q1, q2, q3, q4])
+            scara.delay(2000)
+            
+            
+        
+            
