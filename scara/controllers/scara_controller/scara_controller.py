@@ -27,14 +27,25 @@ def fkine(q):
     raise NotImplementedError("FKINE not implemented")
 
 
-def invkine(x, y, z, phi):
+def invkine(x, y, z, phi, l1=0.5, l2=0.5, offset=0.525):
     """
-    # TODO
+    # DONE
     Implement the inverse kinematics of the SCARA robot.
     Input: x, y, z, phi - desired end-effector pose
     Output: q - joint angles (list of 4 floats)
     """
-    raise NotImplementedError("INVKINE not implemented")
+    c2 = (x ** 2 + y ** 2 - l1 ** 2 - l2 ** 2) / (2 * l1 * l2)
+    s2 = np.sqrt(1 - c2 ** 2)
+    q2 = np.arctan2(s2, c2)
+
+    k1 = l1 + l2 * c2
+    k2 = l2 * s2
+
+    q1 = np.arctan2(y, x) - np.arctan2(k2, k1)
+    q3 = phi - q1 - q2
+    q4 = offset - z 
+
+    return [q1, q2, q3, q4]
 
 
 class Scara:
