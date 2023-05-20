@@ -35,6 +35,10 @@ def invkine(x, y, z, phi, l1=0.5, l2=0.5, offset=0.525):
     Output: q - joint angles (list of 4 floats)
     """
     c2 = (x ** 2 + y ** 2 - l1 ** 2 - l2 ** 2) / (2 * l1 * l2)
+    if np.abs(c2) > 1:
+        print("Position out of reach!")
+        return [0.0, 0.0, 0.0, 0.0]
+
     s2 = np.sqrt(1 - c2 ** 2)
     q2 = np.arctan2(s2, c2)
 
